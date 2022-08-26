@@ -36,6 +36,8 @@ jobs:
 
     runs-on: self-hosted
     steps:
+      - name: init deploy
+        run: sudo rm -rf self_hosted_demo/
       - name: pulling repo
         run: git clone https://github.com/recafe54/self_hosted_demo.git
       - name: checkout repo
