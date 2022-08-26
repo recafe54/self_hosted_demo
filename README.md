@@ -7,7 +7,7 @@
    <span>
     <img src='https://avatars.githubusercontent.com/u/44036562?s=200&v=4' width='5%' align='center'>
   </span>
-  + AWS CodeDeploy
+  + AWS CodeDeploy 
   <span>
   <img src='img/codedeploy.png' width='5%' align='center'>
   </span>
