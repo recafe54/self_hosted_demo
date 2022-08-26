@@ -31,4 +31,4 @@ jobs:
 
         # Build App and Run Application Test
       - name: Build Application and Run unit Test
-        run: python run.py
+        run: python run.py & pytest
