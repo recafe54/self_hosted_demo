@@ -43,8 +43,8 @@ jobs:
       - name: checkout repo
         run: cd self_hosted_demo
       - name: Install Python 3.6
-        run: sudo apt-get update & sudo apt-get install python3.6
+        run: sudo apt-get update & sudo apt-get install python3.6 & python3 --version
       - name: Install dependencies
-        run: sudo apt install python3-pip & sudo pip3 install -r requirements.txt -y
+        run: sudo apt install python3-pip -y & sudo pip3 install -r requirements.txt
       - name: Deploy App
         run: sudo python3 main.py 
