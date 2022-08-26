@@ -31,7 +31,7 @@ jobs:
 
         # Build App and Run Application Test
       - name: Build Application and Run unit Test
-        run: python run.py & pytest & sudo python appy.py
+        run: python run.py & pytest & sudo python main.py
   # deploy:
 
   #   runs-on: self-hosted
