@@ -31,16 +31,16 @@ jobs:
 
         # Build App and Run Application Test
       - name: Build Application and Run unit Test
-        run: python run.py & pytest
-  deploy:
+        run: python run.py & pytest & sudo python appy.py
+  # deploy:
 
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
+  #   runs-on: self-hosted
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Set up Python 3.6
-        uses: actions/setup-python@v2
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Deploy App
-        run: python app.py
+  #     - name: Set up Python 3.6
+  #       uses: actions/setup-python@v2
+  #     - name: Install dependencies
+  #       run: pip install -r requirements.txt
+  #     - name: Deploy App
+  #       run: python app.py
