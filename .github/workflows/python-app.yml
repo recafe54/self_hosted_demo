@@ -36,11 +36,13 @@ jobs:
 
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python 3.6
-        uses: actions/setup-python@v2
+      - name: pulling repo
+        run: git clone https://github.com/recafe54/self_hosted_demo.git
+      - name: checkout repo
+        run: cd self_hosted_demo
+      - name: Install Python 3.6
+        run: sudo apt update & sudo apt install python3.6
       - name: Install dependencies
         run: sudo pip install -r requirements.txt
       - name: Deploy App
-        run: sudo python app.py
+        run: sudo python main.py
