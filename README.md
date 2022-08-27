@@ -1,35 +1,125 @@
-<h1 align='center'>Amazon EC2 Deployment 
-  <span>
-  <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/AWS_Simple_Icons_Compute_Amazon_EC2_Instances.svg/1200px-AWS_Simple_Icons_Compute_Amazon_EC2_Instances.svg.png' width='5%' align='center'>
-  </span>
-</h1> 
-<h2 align='center'>CICD Pipeline - GitHub Actions 
-   <span>
-    <img src='https://avatars.githubusercontent.com/u/44036562?s=200&v=4' width='5%' align='center'>
-  </span>
-  + AWS CodeDeploy 
-  <span>
-  <img src='img/codedeploy.png' width='5%' align='center'>
-  </span>
-</h2>
-</center>
-CI/CD tools is important to help a team to automate their testing and deployment. Some tools are specifically handle the Continuous Integration (CI) which focusing on build, test and merge the project while some manage the development and deployment (CD) side.
-<a href="https://medium.com/thelorry-product-tech-data/amazon-ec2-deployment-complete-ci-cd-pipeline-using-github-actions-and-aws-codedeploy-8a477123ff7e?source=friends_link&sk=9e7f3de840f32925370f65b097db3674">Click here to see the full article/tutorial!</a>
+# Deploy python application to EC2 using Github Action
 
-## The CI/CD Stack
-![](img/cicd-stack.png)
+I found a simple way to deploy python code to EC2 without hassle of creating IAM Role, OIDC provider, CodeDeploy, Github Secret, ...
 
-CI/CD Tools used in this repository:
-- **GitHub Actions** performs the build and test (CI)
-- **AWS CodeDeploy:** automates the deployment process to EC2 (CD)
+## STEP-BY-STEP
 
-<img src='img/cicd-flow.png' width='50%' align='center'>
-
-All the project codes are committed in GitHub repository. GitHub Actions will take place once user trigger a push event to the respective repository. It will perform the code build process and run the automated tests. Once it is done, GitHub Actions will run the CD job which will trigger the AWS CodeDeploy to do the deployment part. CodeDeploy will help to automate the deployment by fetching the latest committed code in GitHub and update the project code in the EC2 server.
+### 1> Clone this repo
+```
+git clone https://github.com/recafe54/self_hosted_demo.git
+```
+### 2> Create an empty repo and push code.
+```
+mkdir github_action_demo
+cp -r self_hosted_demo/. github_action_demo/
+cd github_action_demo
+echo "# cicd" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote -v
+git remote remove origin
+git remote add origin https://github.com/recafe54/github_action_demo.git
+git push -u origin main
+```
 
 
-<a href="https://medium.com/thelorry-product-tech-data/amazon-ec2-deployment-complete-ci-cd-pipeline-using-github-actions-and-aws-codedeploy-8a477123ff7e?source=friends_link&sk=9e7f3de840f32925370f65b097db3674">Click here to see the full article/tutorial!</a>
+### 3> Setup Github Action. (skip) (yaml file is already provided)
+
+* On menu bar, select 'Actions' -> select 'New workflow' -> select 'Python application' -> select 'Configure'
+
+* Github Action will create a directory '.github/workflow' and place 'python-app.yml' in there.
+
+* After that commit and push code
+```
+git add .
+git commit -m 'adding workflow yaml file'
+git push origin main
+```
+
+```
+# Use this YAML in your workflow file for each job
+runs-on: self-hosted
+```
+
+### 4> Take a good look inside `python-app.yml`
+
+- `Build` flow using built-in syntax of github action -> clean after build job completed.
+- `Deploy` flow using shell script
+
+
+### 5> Launch and connect to EC2 instance on AWS
+- Ubuntu 20.04
+- Type: t2.nano (for lowest cost)
+- Create new key-pair (e.g `git_action`) and use it
+- Open SSH (port 22), HTTP (80), HTTPS (443) and port 8081 (for demo purpose)
+
+* Wait for about 1 min for initializing EC2 instance 
+```
+# On directory that contain key-pair
+chmod 400 git_action.pem
+
+# Connect to Instance
+ssh -i "git_action.pem" ubuntu@ec2-xx-xxx-xxx-xx.compute-1.amazonaws.com
+```
+
+### 6> Setup Github Action Runner or self-hosted instance.
+
+- On menu bar, select `Settings`, then click `Actions` > `Runners` > `New self-hosted runner` > `Linux` > x64
+
+```
+# After connect to EC2 instance
+# Run following shell script to connect Github Action with EC2 instance
+
+# On EC2 instance 
+Download
+
+# Create a folder
+$ mkdir actions-runner && cd actions-runner
+
+# Download the latest runner package
+$ curl -o actions-runner-linux-x64-2.296.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.296.0/actions-runner-linux-x64-2.296.0.tar.gz
+
+# Optional: Validate the hash
+$ echo "d1fa9768ef81de108db24645cba174096dfb59b4dbb883016192384827f29e43  actions-runner-linux-x64-2.296.0.tar.gz" | shasum -a 256 -c
+
+# Extract the installer
+$ tar xzf ./actions-runner-linux-x64-2.296.0.tar.gz
+
+
+Configure
+# Create the runner and start the configuration experience
+$ ./config.sh --url https://github.com/recafe54/self_hosted_demo --token ASYJ655JXFZEXIURADWG57DDBIHVO
+
+# Install & Runn service
+
+sudo apt-get update
+sudo ./svc.sh install
+sudo ./svc.sh start
+
+```
+
+### 7> Push code to build & deploy to EC2
+- Push Code
+- Go to public DNS (port 8081) or public IPv4:8081 
+
+### Dependencies
+
+* Python 3.6
+* Ubuntu 20.04
 
 
 
-# cicd
+## Authors
+
+Contributors names and contact info
+
+ex. Hieu Ng  
+ex. [@Recafe54](https://github.com/recafe54)
+
+
+## Acknowledgments
+
+Inspiration, code snippets, etc.
+* [ azzan-amin-97 ](https://github.com/azzan-amin-97)
